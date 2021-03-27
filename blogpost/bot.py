@@ -2,7 +2,8 @@ import discord
 import re
 import os
 import tweepy
-from config import CK, CS, AT, AS, BOT_TOKEN, TWITTER_URL
+from discord.ext import tasks
+from config import CK, CS, AT, AS, BOT_TOKEN, TWITTER_URL, REQUEST_LIMIT
 from regional_indicator import Letter
 
 
@@ -10,13 +11,25 @@ class Bot(discord.Client):
     def __init__(self):
         super().__init__()
 
+        self.counter = 0
+
         auth = tweepy.OAuthHandler(CK, CS)
         auth.set_access_token(AT, AS)
         self.api = tweepy.API(auth)
 
+        self.reset_counter.start()
+
+    @tasks.loop(hours=3)
+    async def reset_counter(self):
+        self.counter = 0
+
     async def on_message(self, message):
         # 自身の場合は無視
         if message.author == self.user:
+            return
+        # 時間当たりのアクセス回数が多い場合は弾く
+        if self.counter > REQUEST_LIMIT:
+            await message.reply("API利用制限により処理できません")
             return
         # 自分へのメンション, また単独の場合（everyone避け）
         if self.user.mentioned_in(message) and len(message.raw_mentions) == 1:
@@ -39,9 +52,12 @@ class Bot(discord.Client):
             # URLでない場合、本文をツイート
             else:
                 print("update_status")
-                self.api.update_status(content)
+                status = self.api.update_status(content)
                 for emoji in [Letter.U, Letter.P, Letter.D, Letter.A, Letter.T, Letter.E]:
                     await message.add_reaction(emoji)
+                await message.reply(os.path.join(status_url, status.id_str))
+
+            self.counter += 1
 
     async def on_ready(self):
         print("ready...")

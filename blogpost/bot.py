@@ -55,7 +55,7 @@ class Bot(discord.Client):
                 status = self.api.update_status(content)
                 for emoji in [Letter.U, Letter.P, Letter.D, Letter.A, Letter.T, Letter.E]:
                     await message.add_reaction(emoji)
-                await message.reply(os.path.join(status_url, status.id_str))
+                await message.reply("<{}>".format(os.path.join(status_url, status.id_str)))
 
             self.counter += 1
 

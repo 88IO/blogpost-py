@@ -61,6 +61,9 @@ class Bot(discord.Client):
 
     async def on_ready(self):
         print("ready...")
+        await self.change_presence(
+                activity=discord.Activity(type=discord.ActivityType.playing, name="https://scienceboy.jp"))
+
 
 if __name__ == "__main__":
     bot = Bot()

@@ -3,8 +3,8 @@ import re
 import os
 import tweepy
 from discord.ext import tasks
-import symbol_letter as Letter
-from config import CK, CS, AT, AS, BOT_TOKEN, TWITTER_URL, REQUEST_LIMIT
+from . import symbol_letter as Letter
+from .config import CK, CS, AT, AS, BOT_TOKEN, TWITTER_URL, REQUEST_LIMIT
 
 
 class Bot(discord.Client):
@@ -72,6 +72,7 @@ class Bot(discord.Client):
                 activity=discord.Activity(type=discord.ActivityType.playing, name="https://scienceboy.jp"))
 
 
-if __name__ == "__main__":
+#if __name__ == "__main__":
+def main():
     bot = Bot()
     bot.run(BOT_TOKEN)

@@ -21,6 +21,7 @@ class Bot(discord.Client):
 
     @tasks.loop(hours=3)
     async def reset_counter(self):
+        print("reset counter")
         self.counter = 0
 
     async def on_message(self, message):
@@ -59,7 +60,8 @@ class Bot(discord.Client):
 
             self.counter += 1
 
-    async def on_reaction_add(reaction, _):
+    async def on_reaction_add(self, reaction, _):
+        print("reaction")
         # "\U0000274C" is ❌
         if reaction.message.author == self.user and reaction.emoji == "\U0000274C":
             await reaction.message.delete()

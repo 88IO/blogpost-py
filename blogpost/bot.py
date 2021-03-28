@@ -3,8 +3,8 @@ import re
 import os
 import tweepy
 from discord.ext import tasks
+import symbol_letter as Letter
 from config import CK, CS, AT, AS, BOT_TOKEN, TWITTER_URL, REQUEST_LIMIT
-from regional_indicator import Letter
 
 
 class Bot(discord.Client):

@@ -59,6 +59,11 @@ class Bot(discord.Client):
 
             self.counter += 1
 
+    async def on_reaction_add(reaction, _):
+        # "\U0000274C" is ❌
+        if reaction.message.author == self.user and reaction.emoji == "\U0000274C":
+            await reaction.message.delete()
+
     async def on_ready(self):
         print("ready...")
         await self.change_presence(

@@ -1,1 +1,1 @@
-blogpost: python blogpost/bot.py
+blogpost: python -m blogpost.bot

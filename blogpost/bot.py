@@ -72,7 +72,9 @@ class Bot(discord.Client):
                 activity=discord.Activity(type=discord.ActivityType.playing, name="https://scienceboy.jp"))
 
 
-#if __name__ == "__main__":
 def main():
     bot = Bot()
     bot.run(BOT_TOKEN)
+
+if __name__ == "__main__":
+    main()

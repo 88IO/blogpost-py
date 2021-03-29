@@ -44,7 +44,7 @@ class Bot(discord.Client):
 
             # 本文がブログのツイートURLの場合、該当ツイートを削除
             status_url = os.path.join(TWITTER_URL, "status", "")
-            if re.fullmatch(os.path.join(status_url, "[0-9]+"), content):
+            if re.fullmatch("<?{}>?".format(os.path.join(status_url, "[0-9]+")), content):
                 print("destroy_status")
                 status_id = content.lstrip(status_url)
                 self.api.destroy_status(status_id)

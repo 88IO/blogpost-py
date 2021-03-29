@@ -46,7 +46,7 @@ class Bot(discord.Client):
             status_url = os.path.join(TWITTER_URL, "status", "")
             if re.fullmatch("<?{}>?".format(os.path.join(status_url, "[0-9]+")), content):
                 print("destroy_status")
-                status_id = content.lstrip(status_url)
+                status_id = content.lstrip("<" + status_url).rstrip(">")
                 self.api.destroy_status(status_id)
                 for emoji in [Letter.D, Letter.E, Letter.S, Letter.T, Letter.R, Letter.O, Letter.Y]:
                     await message.add_reaction(emoji)

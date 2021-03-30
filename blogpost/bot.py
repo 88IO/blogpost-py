@@ -35,23 +35,26 @@ class Bot(discord.Client):
         # 自分へのメンション, また単独の場合（everyone避け）
         if self.user.mentioned_in(message) and len(message.raw_mentions) == 1:
             # メッセージが返信であれば、返信元を対象に変更
-            if (reply_ref := message.reference):
+            if reply_ref := message.reference:
                 message = await message.channel.fetch_message(reply_ref.message_id)
 
             # メンション部分を削除
-            content = re.sub("<@[0-9]+>", "", message.content).lstrip(" 　\n")
-            print(content)
+            _content = re.sub("<@!?\d+>", "", message.content)
+            # 頭の空白と"<>"を削除
+            content = re.sub("^\s*(?:<(.*)>$)?", r"\1", _content)
+            print("content:", content)
 
             # 空なら通知して終了
-            if not content:
+            if re.fullmatch("\s*", content):
+                print("message is empty")
                 await message.reply("メッセージが空です")
                 return
 
             # 本文がブログのツイートURLの場合、該当ツイートを削除
             status_url = os.path.join(TWITTER_URL, "status", "")
-            if re.fullmatch("<?{}>?".format(os.path.join(status_url, "[0-9]+")), content):
+            if match := re.fullmatch(os.path.join(status_url, "(\d+)"), content):
+                status_id = match.group(1)
                 print("destroy_status")
-                status_id = content.lstrip("<" + status_url).rstrip(">")
                 self.api.destroy_status(status_id)
                 for emoji in [Letter.D, Letter.E, Letter.S, Letter.T, Letter.R, Letter.O, Letter.Y]:
                     await message.add_reaction(emoji)
@@ -64,11 +67,12 @@ class Bot(discord.Client):
                 await message.reply("<{}>".format(os.path.join(status_url, status.id_str)))
 
             self.counter += 1
+            print("counter:", self.counter)
 
     async def on_reaction_add(self, reaction, _):
-        print("reaction")
         # "\U0000274C" is ❌
         if reaction.message.author == self.user and reaction.emoji == "\U0000274C":
+            print("x reaction added")
             await reaction.message.delete()
 
     async def on_ready(self):

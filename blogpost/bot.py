@@ -42,6 +42,11 @@ class Bot(discord.Client):
             content = re.sub("<@!.*>", "", message.content).lstrip(" 　\n")
             print(content)
 
+            # 空なら通知して終了
+            if not content:
+                await message.reply("メッセージが空です")
+                return
+
             # 本文がブログのツイートURLの場合、該当ツイートを削除
             status_url = os.path.join(TWITTER_URL, "status", "")
             if re.fullmatch("<?{}>?".format(os.path.join(status_url, "[0-9]+")), content):

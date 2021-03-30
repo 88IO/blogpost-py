@@ -39,7 +39,7 @@ class Bot(discord.Client):
                 message = await message.channel.fetch_message(reply_ref.message_id)
 
             # メンション部分を削除
-            content = re.sub("<@!.*>", "", message.content).lstrip(" 　\n")
+            content = re.sub("<@[0-9]+>", "", message.content).lstrip(" 　\n")
             print(content)
 
             # 空なら通知して終了

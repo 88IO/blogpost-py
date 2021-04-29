@@ -26,14 +26,14 @@ class Bot(discord.Client):
 
     async def on_message(self, message):
         # 自身の場合は無視
-        if message.author == self.user:
+        if message.author == self.user or len(message.raw_mentions) != 1 or message.mention_everyone:
             return
         # 時間当たりのアクセス回数が多い場合は弾く
         if self.counter > REQUEST_LIMIT:
             await message.reply("API利用制限により処理できません")
             return
         # 自分へのメンション, また単独の場合（everyone避け）
-        if self.user.mentioned_in(message) and len(message.raw_mentions) == 1:
+        if self.user.mentioned_in(message):
             # メッセージが返信であれば、返信元を対象に変更
             if reply_ref := message.reference:
                 message = await message.channel.fetch_message(reply_ref.message_id)
